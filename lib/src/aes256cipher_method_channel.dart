@@ -12,39 +12,36 @@ class MethodChannelAes256cipher extends Aes256cipherPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 
   @override
   Future<String> encrypt(
-    String key,
-    String data,
-    int ivSpec,
-    String transformation
-  ) async {
+      String key, String data, int ivSpec, String transformation) async {
     Map<String, dynamic> params = {
       Aes256cipherConstant.paramKey: key,
       Aes256cipherConstant.paramData: data,
       Aes256cipherConstant.paramIvSpec: ivSpec,
       Aes256cipherConstant.paramTransformation: transformation,
     };
-    return await methodChannel.invokeMethod<String>(Aes256cipherConstant.encrypt, params) ?? "";
+    return await methodChannel.invokeMethod<String>(
+            Aes256cipherConstant.encrypt, params) ??
+        "";
   }
 
   @override
   Future<String> decrypt(
-    String key,
-    String data,
-    int ivSpec,
-    String transformation
-  ) async {
+      String key, String data, int ivSpec, String transformation) async {
     Map<String, dynamic> params = {
       Aes256cipherConstant.paramKey: key,
       Aes256cipherConstant.paramData: data,
       Aes256cipherConstant.paramIvSpec: ivSpec,
       Aes256cipherConstant.paramTransformation: transformation,
     };
-    return await methodChannel.invokeMethod<String>(Aes256cipherConstant.decrypt, params) ?? "";
+    return await methodChannel.invokeMethod<String>(
+            Aes256cipherConstant.decrypt, params) ??
+        "";
   }
 }

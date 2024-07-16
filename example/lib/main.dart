@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    aes256Cipher = AES256Cipher(key: "t" * 32);
+    aes256Cipher = AES256Cipher(key: "a" * 32);
     initPlatformState();
   }
 
@@ -65,22 +65,24 @@ class _MyAppState extends State<MyApp> {
               Text('Running on: $_platformVersion\n'),
               Text(encryptResult),
               ElevatedButton(
-                onPressed: () async {
-                  encryptResult = Uri.encodeComponent(await aes256Cipher.encrypt("hohoho"));
-                  setState(() {
-                  });
-                },
-                child: Text("encrpyt")
+                  onPressed: () async {
+                    encryptResult = await aes256Cipher.encrypt("something");
+                    // encryptResult = Uri.encodeComponent(await aes256Cipher.encrypt("something"));
+                    print("encryptResult:$encryptResult");
+                    setState(() {});
+                  },
+                  child: Text("encrpyt")),
+              const SizedBox(
+                height: 24.0,
               ),
-              const SizedBox(height: 24.0,),
               Text(decryptResult),
               ElevatedButton(
                 onPressed: () async {
-                  String result = await aes256Cipher.decrypt(encryptResult);
-                  decryptResult = Uri.decodeComponent(result);
-                  setState(() {
-
-                  });
+                  // String result = await aes256Cipher.decrypt("something");
+                  decryptResult = await aes256Cipher.decrypt(encryptResult);
+                  // decryptResult = Uri.decodeComponent(result);
+                  print("decryptResult:$decryptResult");
+                  setState(() {});
                 },
                 child: Text("decrypt"),
               ),
