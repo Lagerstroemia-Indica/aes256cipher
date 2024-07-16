@@ -1,7 +1,8 @@
 name: aes256cipher
-description: "A new Flutter project."
+description: "flutter AES256Cipher module"
 version: 0.0.1
-homepage:
+homepage: "https://donguran.com/pages/aes256cipher"
+repository: "https://github.com/b3lon9/aes256cipher.git"
 
 environment:
   sdk: '>=3.4.3 <4.0.0'

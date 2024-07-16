@@ -17,11 +17,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final _aes256cipherPlugin = Aes256cipher();
+  late final AES256Cipher aes256Cipher;
+
+  String encryptResult = "hello world! this encrypt result";
+  String decryptResult = "";
 
   @override
   void initState() {
     super.initState();
+    aes256Cipher = AES256Cipher(key: "t" * 32);
     initPlatformState();
   }
 
@@ -32,7 +36,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _aes256cipherPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await aes256Cipher.getPlatformVersion() ?? 'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -55,7 +59,33 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Running on: $_platformVersion\n'),
+              Text(encryptResult),
+              ElevatedButton(
+                onPressed: () async {
+                  encryptResult = Uri.encodeComponent(await aes256Cipher.encrypt("hohoho"));
+                  setState(() {
+                  });
+                },
+                child: Text("encrpyt")
+              ),
+              const SizedBox(height: 24.0,),
+              Text(decryptResult),
+              ElevatedButton(
+                onPressed: () async {
+                  String result = await aes256Cipher.decrypt(encryptResult);
+                  decryptResult = Uri.decodeComponent(result);
+                  setState(() {
+
+                  });
+                },
+                child: Text("decrypt"),
+              ),
+            ],
+          ),
         ),
       ),
     );

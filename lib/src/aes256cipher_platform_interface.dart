@@ -26,4 +26,18 @@ abstract class Aes256cipherPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<String> encrypt(
+    String key,
+    String data,
+    int ivSpec,
+    String transformation
+  ) async => throw UnimplementedError("encrypt() has not been implemented");
+
+  Future<String> decrypt(
+    String key,
+    String data,
+    int ivSpec,
+    String transformation
+  ) async => throw UnimplementedError("decrypt() has not been implemented");
 }

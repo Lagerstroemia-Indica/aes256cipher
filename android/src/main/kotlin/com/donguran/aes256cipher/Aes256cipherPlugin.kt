@@ -7,6 +7,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.*
 
 /** Aes256cipherPlugin */
 class Aes256cipherPlugin: FlutterPlugin, MethodCallHandler {
@@ -22,11 +23,42 @@ class Aes256cipherPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "getPlatformVersion") {
+    when (call.method) {
+      "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
+      Constant.encrypt -> {
+        CoroutineScope(Dispatchers.IO).launch {
+          val encryptResult: String? = async {
+            val params = (call.arguments as? Map<* ,*>)?.entries
+              ?.associate { element -> element.key.toString() to element.value }
+              ?.toMutableMap()
+            AES256Cipher.encrypt(params = params!!)
+          }.await()
+
+          result.success(encryptResult)
+        }
+      }
+
+      Constant.decrypt -> {
+        CoroutineScope(Dispatchers.IO).launch {
+          val encryptResult: String? = async {
+            val params = (call.arguments as? Map<* ,*>)?.entries
+              ?.associate { element -> element.key.toString() to element.value }
+              ?.toMutableMap()
+            AES256Cipher.decrypt(params = params!!)
+          }.await()
+
+          result.success(encryptResult)
+        }
+      }
+
+      else -> result.notImplemented()
+    }
+
+    /*if (call.method == "getPlatformVersion") {
       result.success("Android ${android.os.Build.VERSION.RELEASE}")
     } else {
       result.notImplemented()
-    }
+    }*/
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
