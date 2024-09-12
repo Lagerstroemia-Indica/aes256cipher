@@ -22,11 +22,11 @@ flutter pub add aes256cipher
 
 #### create instance
 
-| parameter      | required           | type   |
-|----------------|--------------------|--------|
-| key            | :heavy_check_mark: | String |
-| ivSpec         | :x:                | Int    |
-| transformation | :x:                | String |
+| parameter      | required           | type   |  default               |
+|----------------|--------------------|--------|------------------------|
+| key            | :heavy_check_mark: | String |                        |
+| ivSpec         | :x:                | Int    |  16                    |
+| transformation | :x:                | String |  AES/CBC/PKCS5Padding  |
 
 ```dart
 final AES256Cipher aes256Cipher = AES256Cipher(key: [String - length: 32]);
