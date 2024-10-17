@@ -1,1 +1,1 @@
-export 'src/aes256cipher.dart';
+export 'src/aes256cipher.dart' show AES256Cipher;
