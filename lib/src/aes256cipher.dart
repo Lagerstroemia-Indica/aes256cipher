@@ -3,6 +3,9 @@ import 'aes256cipher_platform_interface.dart';
 /// only UTF-8
 class AES256Cipher {
   /// AES key
+  ///
+  /// [key] is unique own key.
+  /// required Char [32] length.
   final String key;
 
   /// default 16 byteArray
