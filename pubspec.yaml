@@ -37,8 +37,9 @@ flutter:
     platforms:
       android:
         package: com.donguran.aes256cipher
-        pluginClass: Aes256cipherPlugin
-
+        pluginClass: AES256CipherPlugin
+      ios:
+        pluginClass: AES256CipherPlugin
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
