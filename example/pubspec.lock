@@ -90,6 +90,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  flutter_logcat:
+    dependency: "direct main"
+    description:
+      name: flutter_logcat
+      sha256: "843b3325bd5a303c88400f768f506e06d559d9d71cd683e57fb3e6c31c6d47e6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.6"
   flutter_test:
     dependency: "direct dev"
     description: flutter

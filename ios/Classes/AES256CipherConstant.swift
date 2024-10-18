@@ -1,7 +1,7 @@
 import Foundation
 
 public struct AES256CipherConstant {
-    static let version = "getPlatformVersion"
-    static let encrypt = "encrypt"
-    static let decrypt = "decrypt"
+    static let version: String = "getPlatformVersion"
+    static let encrypt: String = "encrypt"
+    static let decrypt: String = "decrypt"
 }
