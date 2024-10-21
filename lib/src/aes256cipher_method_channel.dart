@@ -18,7 +18,7 @@ class MethodChannelAes256cipher extends Aes256cipherPlatform {
 
   @override
   Future<String> encrypt(
-      String key, String data, int ivSpec, String transformation) async {
+      String key, String data, bool ivSpec, String transformation) async {
     Map<String, dynamic> params = {
       Aes256cipherConstant.paramKey: key,
       Aes256cipherConstant.paramData: data,
@@ -32,7 +32,7 @@ class MethodChannelAes256cipher extends Aes256cipherPlatform {
 
   @override
   Future<String> decrypt(
-      String key, String data, int ivSpec, String transformation) async {
+      String key, String data, bool ivSpec, String transformation) async {
     Map<String, dynamic> params = {
       Aes256cipherConstant.paramKey: key,
       Aes256cipherConstant.paramData: data,

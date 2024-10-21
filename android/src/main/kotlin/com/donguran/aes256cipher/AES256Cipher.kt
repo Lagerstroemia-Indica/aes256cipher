@@ -14,7 +14,10 @@ object AES256Cipher {
     fun encrypt(params: Map<String, Any?>): String {
         val aesKey: String = params[Constant.paramKey]!! as String
         val data: String = params[Constant.paramData]!! as String
-        val ivSpecSize: Int = params[Constant.paramIvSpec]!! as Int
+        val ivSpecSize: Int = 16
+        // Decision 'iv' availability
+        // default: true
+        val ivSpecUse: Boolean = params[Constant.paramIvSpec]!! as Boolean
         val transformation: String = params[Constant.paramTransformation]!! as String
 
         return try {
@@ -22,7 +25,11 @@ object AES256Cipher {
 
             // Create IV
             val iv = createIvSpecByteArray(size = ivSpecSize)
-            SecureRandom().nextBytes(iv)
+
+            // iv not used,
+            if (ivSpecUse) {
+                SecureRandom().nextBytes(iv)
+            }
 
             val ivSpec: AlgorithmParameterSpec = IvParameterSpec(iv)
             val newKey: SecretKeySpec = SecretKeySpec(aesKey.toByteArray(Charsets.UTF_8), "AES")
@@ -35,7 +42,11 @@ object AES256Cipher {
             val encryptedBytes: ByteArray = cipher.doFinal(textBytes)
 
             // Combine IV + encryptedBytes
-            val ivAndCipherText = iv + encryptedBytes
+            val ivAndCipherText = if (ivSpecUse) {
+                iv + encryptedBytes
+            } else {
+                encryptedBytes
+            }
 
             Base64.encodeToString(ivAndCipherText, Base64.DEFAULT)
         } catch (e: Exception) {
@@ -47,7 +58,8 @@ object AES256Cipher {
     fun decrypt(params: Map<String, Any?>): String {
         val aesKey: String = params[Constant.paramKey]!! as String
         val data: String = params[Constant.paramData]!! as String
-        val ivSpecSize: Int = params[Constant.paramIvSpec]!! as Int
+        val ivSpecUse = params[Constant.paramIvSpec]!! as Boolean
+        val ivSpecSize: Int = if (ivSpecUse)  16 else 0;
         val transformation: String = params[Constant.paramTransformation]!! as String
 
         return try {
@@ -55,7 +67,7 @@ object AES256Cipher {
             val textBytes:ByteArray = Base64.decode(data, Base64.DEFAULT)   // Base64.DEFAULT = 0
 
             // IV
-            val iv: ByteArray = textBytes.copyOfRange(0, ivSpecSize)
+            val iv: ByteArray = if (ivSpecUse) textBytes.copyOfRange(0, ivSpecSize) else createIvSpecByteArray(16)
             val cipherText: ByteArray = textBytes.copyOfRange(ivSpecSize, textBytes.size)
 
             val ivSpec: AlgorithmParameterSpec = IvParameterSpec(iv)

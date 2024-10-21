@@ -1,3 +1,5 @@
+import 'package:aes256cipher/src/aes256cipher_const.dart';
+
 import 'aes256cipher_platform_interface.dart';
 
 /// only UTF-8
@@ -10,7 +12,27 @@ class AES256Cipher {
 
   /// default 16 byteArray
   /// this property is into IvParameterSpec and AlgorithmParameterSpec
-  final int ivSpec = 16;
+  ///
+  /// 2024-10-21
+  /// Changed type [int] to [bool].
+  ///
+  /// The [ivSpec] size is default 16.
+  /// So [ivSpec] property was changed decide to availability.
+  ///
+  /// -
+  ///
+  /// [ivSpec] is default 'true'.
+  /// It is more protect encrypted sentence.
+  /// return 65 length String.
+  ///
+  /// [ivSpec] is 'false'
+  /// It is not use 'iv'.
+  /// return 45 length String.
+  ///
+  /// -
+  ///
+  /// Use param [Aes256cipherConstant.paramIvSpec].
+  final bool ivSpec;
 
   /// transformation into Cipher
   ///
@@ -23,12 +45,11 @@ class AES256Cipher {
   /// Fix values can have been felt to easy it
   AES256Cipher({
     required this.key,
-    // this.ivSpec = 16,
+    this.ivSpec = true,
     // this.transformation = "AES/CBC/PKCS5Padding"
   }) {
     if (key.length != 32) {
-      throw Exception("""AES256Cipher [key] property required 32 length,
-       because input 32 bit into AES256Cipher 256 bit key""");
+      throw Exception(" AES256Cipher constructor [key] parameter required '32' text length, because The cipher key required 32-bit.");
     }
   }
 

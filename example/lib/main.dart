@@ -70,6 +70,9 @@ class _MyAppState extends State<MyApp> {
                         // key: a * 32
                         encryptResult = await aes256Cipher.encrypt("Something Sentence");
                         Log.i("encryptResult:$encryptResult");
+                        Log.i("length:${encryptResult.length}");
+                        // length: Always:65 = iv + encrypted
+                        // length: Always:45 = encrypted
                         setState(() {});
                       },
                       child: const Text("encrpyt")),
@@ -115,9 +118,10 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void loadVersion() async {
-    setState(() async {
+  void loadVersion() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       platformVersion = await aes256Cipher.getPlatformVersion();
-    });
+      setState(() {});
+    },);
   }
 }
