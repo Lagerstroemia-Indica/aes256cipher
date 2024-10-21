@@ -1,6 +1,6 @@
-# aes256cipher
+# AES256Cipher
 
-AES256Cipher secure module.
+AES256Cipher convert text to security module.
 
 ## Getting Started
 
@@ -13,35 +13,49 @@ For help getting started with Flutter development, view the
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## 🍔add
+<br/>
+
+## 🍔 Add
 ```dart
 flutter pub add aes256cipher
 ```
 
-## 🚀usage
+```dart
+import 'package:aes256cipher/aes256cipher.dart';
+```
 
-#### create instance
+<br/>
+
+## 🚀 Usage
+
+#### Create instance
+-  You must input 32-bit char into `key` parameter.
+-  Don't use different own your `key`.
 
 | parameter      | required           | type   |  default               |
 |----------------|--------------------|--------|------------------------|
 | key            | :heavy_check_mark: | String |                        |
-| ivSpec         | :x:                | Int    |  16                    |
-| transformation | :x:                | String |  AES/CBC/PKCS5Padding  |
+
 
 ```dart
 final AES256Cipher aes256Cipher = AES256Cipher(key: [String - length: 32]);
-
-ex) aes256Cipher = AES256Cipher(key: "a" * 32);
 ```
 
-#### encrypt
+Example
 ```dart
-final String value = "something";
-
-final String encryptResult = aes256Cipher.encrypt(value);    // hD5BBkxQWdEMu5PNncxtGw==
+final AES256Cipher aes256cipher = AES256Cipher(key: "A1234567B1234567C1234567D1234567");
 ```
 
-#### decrypt
+#### Encrypted
 ```dart
-final String decryptResult = aes256Cipher.decrypt(encryptResult);    // [B@552ab2b
+final String value = "Something Sentence";
+
+final String encryptResult = aes256Cipher.encrypt(value);
+// encryptResult: OUPswS1JeArwaeKSvGtaAeb3C+Sm8UookvDIwwGk9c2XNhtqClmRADo1r4MXUGiY
+```
+
+#### Decrypted
+```dart
+final String decryptResult = aes256Cipher.decrypt(encryptResult);   // encryptedResult: OUPswS1JeArwaeKSvGtaAeb3C+Sm8UookvDIwwGk9c2XNhtqClmRADo1r4MXUGiY
+// decryptResult: Something Sentence
 ```
