@@ -63,14 +63,16 @@ object AES256Cipher {
             val cipher: Cipher = Cipher.getInstance(transformation)
 
             // Init Decrypt
+            // throw Error
             cipher.init(Cipher.DECRYPT_MODE, newKey, ivSpec)
 
             // Decode
             val decryptedBytes: ByteArray = cipher.doFinal(cipherText)
             String(decryptedBytes, Charsets.UTF_8)
         } catch (e: Exception) {
-            e.printStackTrace()
-            e.message!!
+            // e.printStackTrace()
+            // e.message!!
+            "BAD_DECRYPT: Please check again your 'aesKey'"
         }
     }
 
