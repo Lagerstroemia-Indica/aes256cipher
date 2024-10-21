@@ -1,6 +1,6 @@
 name: aes256cipher
 description: "Flutter AES256Cipher Module"
-version: 0.0.1
+version: 0.0.2
 # homepage: "https://donguran.com/pages/aes256cipher"
 repository: "https://github.com/b3lon9/aes256cipher.git"
 
