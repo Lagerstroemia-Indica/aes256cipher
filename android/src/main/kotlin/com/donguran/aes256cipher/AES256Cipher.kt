@@ -2,6 +2,7 @@ package com.donguran.aes256cipher
 
 import android.annotation.SuppressLint
 import android.util.Base64
+import java.security.SecureRandom
 import java.security.spec.AlgorithmParameterSpec
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
@@ -18,12 +19,25 @@ object AES256Cipher {
 
         return try {
             val textBytes:ByteArray = data.toByteArray(Charsets.UTF_8)
-            val ivSpec: AlgorithmParameterSpec = IvParameterSpec(createIvSpecByteArray(size = ivSpecSize))
+
+            // Create IV
+            val iv = createIvSpecByteArray(size = ivSpecSize)
+            SecureRandom().nextBytes(iv)
+
+            val ivSpec: AlgorithmParameterSpec = IvParameterSpec(iv)
             val newKey: SecretKeySpec = SecretKeySpec(aesKey.toByteArray(Charsets.UTF_8), "AES")
             val cipher: Cipher = Cipher.getInstance(transformation)
+
+            // Init Encrypt
             cipher.init(Cipher.ENCRYPT_MODE, newKey, ivSpec)
 
-            Base64.encodeToString(cipher.doFinal(textBytes), Base64.DEFAULT)
+            // Encrypt
+            val encryptedBytes: ByteArray = cipher.doFinal(textBytes)
+
+            // Combine IV + encryptedBytes
+            val ivAndCipherText = iv + encryptedBytes
+
+            Base64.encodeToString(ivAndCipherText, Base64.DEFAULT)
         } catch (e: Exception) {
             e.printStackTrace()
             e.message!!
@@ -37,13 +51,23 @@ object AES256Cipher {
         val transformation: String = params[Constant.paramTransformation]!! as String
 
         return try {
-            val textBytes:ByteArray = Base64.decode(data, 0)
-            val ivSpec: AlgorithmParameterSpec = IvParameterSpec(createIvSpecByteArray(size = ivSpecSize))
+            // Decode
+            val textBytes:ByteArray = Base64.decode(data, Base64.DEFAULT)   // Base64.DEFAULT = 0
+
+            // IV
+            val iv: ByteArray = textBytes.copyOfRange(0, ivSpecSize)
+            val cipherText: ByteArray = textBytes.copyOfRange(ivSpecSize, textBytes.size)
+
+            val ivSpec: AlgorithmParameterSpec = IvParameterSpec(iv)
             val newKey: SecretKeySpec = SecretKeySpec(aesKey.toByteArray(Charsets.UTF_8), "AES")
             val cipher: Cipher = Cipher.getInstance(transformation)
+
+            // Init Decrypt
             cipher.init(Cipher.DECRYPT_MODE, newKey, ivSpec)
 
-            cipher.doFinal(textBytes).toString()
+            // Decode
+            val decryptedBytes: ByteArray = cipher.doFinal(cipherText)
+            String(decryptedBytes, Charsets.UTF_8)
         } catch (e: Exception) {
             e.printStackTrace()
             e.message!!

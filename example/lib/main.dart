@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    aes256Cipher = AES256Cipher(key: "a" * 32);
+    aes256Cipher = AES256Cipher(key: "donguran123456781234567812345678");
     initPlatformState();
   }
 
@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
               Text(encryptResult),
               ElevatedButton(
                   onPressed: () async {
+                    // key: a * 32
                     encryptResult = await aes256Cipher.encrypt("something");
                     // encryptResult = Uri.encodeComponent(await aes256Cipher.encrypt("something"));
                     print("encryptResult:$encryptResult");

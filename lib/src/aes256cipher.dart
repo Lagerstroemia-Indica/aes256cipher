@@ -10,17 +10,22 @@ class AES256Cipher {
 
   /// default 16 byteArray
   /// this property is into IvParameterSpec and AlgorithmParameterSpec
-  final int ivSpec;
+  final int ivSpec = 16;
 
   /// transformation into Cipher
   ///
   /// [transformation] default : AES/CBC/PKCS5Padding
-  final String transformation;
+  final String transformation = "AES/CBC/PKCS5Padding";
 
+  /// required key char length '32'
+  ///
+  /// @deprecated [ivSpec], [transformation]
+  /// Fix values can have been felt to easy it
   AES256Cipher(
       {required this.key,
-      this.ivSpec = 16,
-      this.transformation = "AES/CBC/PKCS5Padding"}) {
+      // this.ivSpec = 16,
+      // this.transformation = "AES/CBC/PKCS5Padding"
+      }) {
     if (key.length != 32) {
       throw Exception("""AES256Cipher [key] property required 32 length,
        because input 32 bit into AES256Cipher 256 bit key""");
