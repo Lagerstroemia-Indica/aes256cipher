@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:aes256cipher/aes256cipher.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_logcat/flutter_logcat.dart';
 
 void main() {
@@ -17,39 +14,28 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   late final AES256Cipher aes256Cipher;
 
-  String encryptResult = "hello world! this encrypt result";
+  String platformVersion = "Unknown";
+
+  String encryptResult = "";
   String decryptResult = "";
+
+  // This code will be solve your doubt.
+  final String test1 = "dQuPSKM9NB3WxoHlBNkhlU924xnuJkW9UHBr91oFatepq41N3iIdhEqUTV5UHl77";
+  final String test2 = "u3mQx2xrhxLh2wDmKjV2Owk8aPxJoJAe5dUlRgb3V7NdqlpUlSxk6yX6r5Q0h3L+";
+
+  final TextStyle titleStyle = const TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w600,
+  );
 
   @override
   void initState() {
     super.initState();
-    aes256Cipher = AES256Cipher(key: "donguran123456781234567812345678");
-    initPlatformState();
-  }
+    aes256Cipher = AES256Cipher(key: "A1234567B1234567C1234567D1234567");
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await aes256Cipher.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-    Log.i("platformVersion:$platformVersion");
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    loadVersion();
   }
 
   @override
@@ -57,41 +43,81 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('AES256Cipher Example Demo'),
         ),
-        body: Center(
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Running on: $_platformVersion\n'),
-              Text(encryptResult),
-              ElevatedButton(
-                  onPressed: () async {
-                    // key: a * 32
-                    encryptResult = await aes256Cipher.encrypt("something");
-                    // encryptResult = Uri.encodeComponent(await aes256Cipher.encrypt("something"));
-                    print("encryptResult:$encryptResult");
-                    setState(() {});
-                  },
-                  child: Text("encrpyt")),
-              const SizedBox(
-                height: 24.0,
+              Text("Platform:" ,style: titleStyle),
+              Text(platformVersion),
+              const SizedBox(height: 12.0,),
+              const Text("aesKey:",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w600
+                ),
               ),
-              Text(decryptResult),
+              const Text("A1234567B1234567C1234567D1234567"),
+              const SizedBox(height: 12.0,),
+
+              Row(
+                children: [
+                  ElevatedButton(
+                      onPressed: () async {
+                        // key: a * 32
+                        encryptResult = await aes256Cipher.encrypt("Something Sentence");
+                        Log.i("encryptResult:$encryptResult");
+                        setState(() {});
+                      },
+                      child: const Text("encrpyt")),
+                  const Text("  < < <  \"Something Sentence\"")
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(encryptResult),
+              ),
+
+              Visibility(
+                visible: encryptResult.isNotEmpty,
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 18.0),
+                  child: Text("⌄\n⌄\n⌄"),
+                ),
+              ),
+
               ElevatedButton(
                 onPressed: () async {
                   // String result = await aes256Cipher.decrypt("something");
                   decryptResult = await aes256Cipher.decrypt(encryptResult);
-                  // decryptResult = Uri.decodeComponent(result);
-                  print("decryptResult:$decryptResult");
+
+                  final testResult1 = await aes256Cipher.decrypt(test1);
+                  final testResult2 = await aes256Cipher.decrypt(test2);
+                  Log.x("decryptResult:$decryptResult");
+
+                  Log.x("decryptResult1:$testResult1");
+                  Log.x("decryptResult2:$testResult2");
                   setState(() {});
                 },
-                child: Text("decrypt"),
+                child: const Text("decrypt"),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(decryptResult),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void loadVersion() async {
+    setState(() async {
+      platformVersion = await aes256Cipher.getPlatformVersion();
+    });
   }
 }

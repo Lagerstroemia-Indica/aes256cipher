@@ -21,11 +21,11 @@ class AES256Cipher {
   ///
   /// @deprecated [ivSpec], [transformation]
   /// Fix values can have been felt to easy it
-  AES256Cipher(
-      {required this.key,
-      // this.ivSpec = 16,
-      // this.transformation = "AES/CBC/PKCS5Padding"
-      }) {
+  AES256Cipher({
+    required this.key,
+    // this.ivSpec = 16,
+    // this.transformation = "AES/CBC/PKCS5Padding"
+  }) {
     if (key.length != 32) {
       throw Exception("""AES256Cipher [key] property required 32 length,
        because input 32 bit into AES256Cipher 256 bit key""");
@@ -33,15 +33,16 @@ class AES256Cipher {
   }
 
   /// native Platform Version
-  Future<String?> getPlatformVersion() {
-    return Aes256cipherPlatform.instance.getPlatformVersion();
+  Future<String> getPlatformVersion() async {
+    return await Aes256cipherPlatform.instance.getPlatformVersion() ??
+        "Unknown";
   }
 
   /// encrypt function
   ///
   /// if you want URLEncoder.encode result then you can use
   /// Uri.encodeComponent function from dart:core
-  Future<String> encrypt(String data) {
+  Future<String> encrypt(String data) async {
     return Aes256cipherPlatform.instance
         .encrypt(key, data, ivSpec, transformation);
   }
@@ -50,7 +51,7 @@ class AES256Cipher {
   ///
   /// if you want URLDecoder.decode result then you can use
   /// Uri.decodeComponent function from dart:core
-  Future<String> decrypt(String data) {
+  Future<String> decrypt(String data) async {
     return Aes256cipherPlatform.instance
         .decrypt(key, data, ivSpec, transformation);
   }
