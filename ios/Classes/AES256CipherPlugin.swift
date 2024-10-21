@@ -2,6 +2,7 @@ import Flutter
 import UIKit
 
 public class AES256CipherPlugin: NSObject, FlutterPlugin {
+    let errorMessage = "BAD_DECRYPT: Please check again your 'aesKey'"
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "aes256cipher", binaryMessenger: registrar.messenger())
     // This name change yaml files plugin name.
@@ -15,10 +16,12 @@ public class AES256CipherPlugin: NSObject, FlutterPlugin {
       result("iOS " + UIDevice.current.systemVersion)
       break
     case AES256CipherConstant.encrypt:
-      result("please encrypt!")
+        let encryptedData: String = self.encrypt(args: call.arguments as! [String: Any])
+        result(encryptedData)
       break
     case AES256CipherConstant.decrypt:
-      result("please decrypt!")
+        let decryptedData: String = self.decrypt(args: call.arguments as! [String: Any])
+        result(decryptedData)
       break
     default:
       result(FlutterMethodNotImplemented)
