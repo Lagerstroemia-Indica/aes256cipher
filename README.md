@@ -28,9 +28,9 @@ import 'package:aes256cipher/aes256cipher.dart';
 
 ## 🚀 Usage
 
-#### Create instance
+#### Create instance 🌱
 -  You must input 32-bit char into `key` parameter.
--  Don't use different own your `key`.
+-  Don't use different own your `key`🔑.
 
 | parameter      | required           | type   |  default               |
 |----------------|--------------------|--------|------------------------|
@@ -41,12 +41,13 @@ import 'package:aes256cipher/aes256cipher.dart';
 final AES256Cipher aes256Cipher = AES256Cipher(key: [String - length: 32]);
 ```
 
-Example
 ```dart
+// ex.
 final AES256Cipher aes256cipher = AES256Cipher(key: "A1234567B1234567C1234567D1234567");
 ```
+<br/>
 
-#### Encrypted
+### Encrypted 🔐
 ```dart
 final String value = "Something Sentence";
 
@@ -54,8 +55,14 @@ final String encryptResult = aes256Cipher.encrypt(value);
 // encryptResult: OUPswS1JeArwaeKSvGtaAeb3C+Sm8UookvDIwwGk9c2XNhtqClmRADo1r4MXUGiY
 ```
 
-#### Decrypted
+### Decrypted 🔓
 ```dart
 final String decryptResult = aes256Cipher.decrypt(encryptResult);   // encryptedResult: OUPswS1JeArwaeKSvGtaAeb3C+Sm8UookvDIwwGk9c2XNhtqClmRADo1r4MXUGiY
 // decryptResult: Something Sentence
 ```
+
+<br/>
+
+|  iOS|  Android|
+|-----|---------|
+|<img src="https://github.com/user-attachments/assets/3ffcc795-4a5d-4768-abd4-7e3e4a9e9ba8" alt="iOS Exam GIF" width="250">|<img src="https://github.com/user-attachments/assets/70abe2ad-82ae-42bf-bb3f-aec60cd5c633" alt="Android Exam GIF" width="250">|
