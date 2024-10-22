@@ -15,18 +15,21 @@ extension AES256CipherPlugin {
         // Decrypted Data
         let data: String = params[AES256CipherConstant.paramData] as! String
         // ivSpec 0x00, 0x00, 0x00, 0x00 ...
-        let ivSpecSize: Int8 = params[AES256CipherConstant.paramIvSpec] as! Int8
+        // ivSpec changed 'Int8' to 'Bool'
+        let ivSpecUse: Bool = params[AES256CipherConstant.paramIvSpec] as! Bool
+        
+        // let ivSpecSize: Int8 = 16
         // let transformation: String = params[AES256CipherConstant.paramTransformation] as! String
         
         // UTF-8 Encoding and AES256 Encrypted
         let utf8Data: Data = data.data(using: .utf8)!
         
         // AES256Cipher Encrypt
-        let encryptedData = utf8Data.aes256Encrypt(key: aesKey, data:utf8Data, ivSpec: ivSpecSize)
+        let encryptedData = utf8Data.aes256Encrypt(key: aesKey, data:utf8Data, ivSpecUse: ivSpecUse)
         
         // return to Flutter
         if (encryptedData != nil) {
-            return encryptedData!.base64EncodedString()
+            return encryptedData!.base64EncodedString(options: [.endLineWithCarriageReturn])
         } else {
             return "BAD_ENCRYPT"
         }
@@ -38,7 +41,9 @@ extension AES256CipherPlugin {
         // Encrypted Data
         let data: String = params[AES256CipherConstant.paramData] as! String
         // ivSpec 0x00, 0x00, ... x 16
-        let ivSpecSize: Int8 = params[AES256CipherConstant.paramIvSpec] as! Int8
+        // let ivSpecSize: Int8 = 16
+        
+        let ivSpecUse: Bool = params[AES256CipherConstant.paramIvSpec] as! Bool
         
         // Decode Base64 to Data
         guard let encryptedData = Data(base64Encoded: data) else {
@@ -46,14 +51,14 @@ extension AES256CipherPlugin {
         }
         
         // Extract IV and CipherText
-        let ivSize = kCCBlockSizeAES128
-        let ivData = encryptedData.prefix(ivSize)
+        let ivSize = ivSpecUse ? kCCBlockSizeAES128 : 0
+        let ivData: Data? = ivSpecUse ? encryptedData.prefix(ivSize) : nil
         
         let cipherTextData = encryptedData.suffix(encryptedData.count - ivSize)
         
         // AES256Cipher Decrypt
         do {
-            guard let decryptedData = try ivData.aes256Decrypt(key: aesKey, data: cipherTextData, iv: ivData) else {
+            guard let decryptedData = try cipherTextData.aes256Decrypt(key: aesKey, data: cipherTextData, iv: ivData) else {
                 return self.errorMessage
             }
             
@@ -68,7 +73,7 @@ extension AES256CipherPlugin {
 
 extension Data {
     // Encrypt
-    func aes256Encrypt(key: String, data: Data, ivSpec iv: Int8) -> Data? {
+    func aes256Encrypt(key: String, data: Data, ivSpecUse: Bool) -> Data? {
         // 32bytes key
         var keyData = Data(key.utf8)
         keyData.count = kCCKeySizeAES256
@@ -77,8 +82,10 @@ extension Data {
         let ivSize = kCCBlockSizeAES128
         var iv = Data(count: ivSize)
         // RandomSecure
-        _ = iv.withUnsafeMutableBytes { ivBytes in
-            SecRandomCopyBytes(kSecRandomDefault, ivSize, ivBytes.baseAddress!)
+        if (ivSpecUse) {
+            _ = iv.withUnsafeMutableBytes { ivBytes in
+                SecRandomCopyBytes(kSecRandomDefault, ivSize, ivBytes.baseAddress!)
+            }
         }
         
         
@@ -90,7 +97,6 @@ extension Data {
         
         // Encode bytes
         var encryptedByte: size_t = 0
-        
         
         // Execute Encrypt
         let encryptResult = buffer.withUnsafeMutableBytes { bufferBytes in
@@ -116,7 +122,11 @@ extension Data {
         }
         
         if encryptResult == kCCSuccess {
-            return iv + buffer.prefix(encryptedByte)
+            if (ivSpecUse) {
+                return iv + buffer.prefix(encryptedByte)
+            } else {
+                return buffer.prefix(encryptedByte)
+            }
         } else {
             return nil
         }
@@ -124,7 +134,11 @@ extension Data {
     
     // Decrypt
     // Change ivSpecSize -> iv
-    func aes256Decrypt(key: String, data: Data, iv: Data) throws -> Data? {
+    //
+    // 2024-10-22
+    // If 'iv' data isn't exist situation
+    // iv: Data? Optional type
+    func aes256Decrypt(key: String, data: Data, iv: Data?) throws -> Data? {
         // 32bytes key
         var keyData = Data(key.utf8)
         keyData.count = kCCKeySizeAES256
@@ -140,14 +154,30 @@ extension Data {
         let decryptResult = buffer.withUnsafeMutableBytes { bufferBytes in
             data.withUnsafeBytes { dataBytes in
                 keyData.withUnsafeBytes { keyBytes in
-                    iv.withUnsafeBytes { ivBytes in
+                    if (iv != nil) {
+                        iv!.withUnsafeBytes { ivBytes in
+                            CCCrypt(
+                                CCOperation(kCCDecrypt),
+                                CCAlgorithm(kCCAlgorithmAES128),
+                                CCOptions(kCCOptionPKCS7Padding),
+                                keyBytes.baseAddress,
+                                kCCKeySizeAES256,
+                                ivBytes.baseAddress,
+                                dataBytes.baseAddress,
+                                data.count,
+                                bufferBytes.baseAddress,
+                                bufferSize,
+                                &decryptBytes
+                            )
+                        }
+                    } else {
                         CCCrypt(
                             CCOperation(kCCDecrypt),
                             CCAlgorithm(kCCAlgorithmAES128),
                             CCOptions(kCCOptionPKCS7Padding),
                             keyBytes.baseAddress,
                             kCCKeySizeAES256,
-                            ivBytes.baseAddress,
+                            nil,
                             dataBytes.baseAddress,
                             data.count,
                             bufferBytes.baseAddress,

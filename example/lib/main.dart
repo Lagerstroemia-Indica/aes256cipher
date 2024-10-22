@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    aes256Cipher = AES256Cipher(key: "A1234567B1234567C1234567D1234567");
+    aes256Cipher = AES256Cipher(key: "A1234567B1234567C1234567D1234567", ivSpec: false);
 
     loadVersion();
   }
@@ -73,6 +73,9 @@ class _MyAppState extends State<MyApp> {
                         Log.i("length:${encryptResult.length}");
                         // length: Always:65 = iv + encrypted
                         // length: Always:45 = encrypted
+
+                        // length: 64(iOS) = iv + encrypted
+                        // length: 44(iOS) = encrypted
                         setState(() {});
                       },
                       child: const Text("encrpyt")),

@@ -48,7 +48,7 @@ object AES256Cipher {
                 encryptedBytes
             }
 
-            Base64.encodeToString(ivAndCipherText, Base64.DEFAULT)
+            Base64.encodeToString(ivAndCipherText, Base64.NO_WRAP)
         } catch (e: Exception) {
             e.printStackTrace()
             e.message!!
