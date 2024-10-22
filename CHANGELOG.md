@@ -1,3 +1,6 @@
+## 0.0.3
+* Changed ivSpec parameter type.
+
 ## 0.0.2
 * Added iOS.
 * Fixed Decrypt Function.

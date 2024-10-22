@@ -1,6 +1,6 @@
 name: aes256cipher
 description: "The Flutter AES256Cipher convert module, String text(Sentence) easy Encrypted/Decrypted"
-version: 0.0.2
+version: 0.0.3
 # homepage: "https://donguran.com/pages/aes256cipher"
 repository: "https://github.com/b3lon9/aes256cipher.git"
 
